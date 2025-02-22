@@ -16,7 +16,7 @@ index = faiss.IndexFlatL2(384)
 pdf_texts = []
 
 # Hugging Face API setup
-HF_API_KEY = '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' 
+HF_API_KEY = 'hf_api key' 
 HF_MODEL_NAME = 'mistral-7b-instruct-v0.3'
 HF_API_URL = f'https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3'
 
