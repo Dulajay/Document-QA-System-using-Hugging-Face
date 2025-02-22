@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Chatbot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f9;
+    }
+    #chat-container {
+      width: 600px;
+      margin: auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    #chat-box {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+    }
+    .user-message {
+      text-align: right;
+      padding: 5px;
+      background-color: #e1f5fe;
+      margin: 5px;
+      border-radius: 5px;
+    }
+    .bot-message {
+      text-align: left;
+      padding: 5px;
+      background-color: #e0e0e0;
+      margin: 5px;
+      border-radius: 5px;
+    }
+    input[type="file"] {
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="chat-container">
+    <h2>Chat with PDF Content</h2>
+    <div>
+      <input type="file" id="pdf-upload" accept="application/pdf" />
+    </div>
+    <div id="chat-box"></div>
+    <input type="text" id="user-input" placeholder="Ask a question..." />
+    <button onclick="askQuestion()">Ask</button>
+  </div>
+
+  <script>
+    let pdfFile = null;
+
+    
+    document.getElementById('pdf-upload').addEventListener('change', (e) => {
+      pdfFile = e.target.files[0];
+      alert('PDF uploaded successfully!');
+    });
+
+    async function askQuestion() {
+      const question = document.getElementById('user-input').value;
+      if (!question.trim()) return;
+
+      
+      addMessage(question, 'user');
+
+      
+      const formData = new FormData();
+      formData.append('pdf', pdfFile);
+      formData.append('question', question);
+
+      const response = await fetch('/ask', {
+        method: 'POST',
+        body: formData
+      });
+      const data = await response.json();
+
+      
+      addMessage(data.answer, 'bot');
+      document.getElementById('user-input').value = ''; 
+    }
+
+    function addMessage(message, type) {
+      const chatBox = document.getElementById('chat-box');
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add(type === 'user' ? 'user-message' : 'bot-message');
+      messageDiv.innerText = message;
+      chatBox.appendChild(messageDiv);
+      chatBox.scrollTop = chatBox.scrollHeight; 
+    }
+  </script>
+</body>
+</html>
